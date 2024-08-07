@@ -6,8 +6,7 @@ Data dipetakan menggunakan right indent karena mayoritas tabel menggunakan angka
 String Terpanjang diukur dengan membuat sebuat textbox baru, menerapkan Font Lato Bold, dan mengukur lebar dari textbox tersebut.
 
 Perhitungan Right Indent sebagai berikut:
-Apabila lebar string terpanjang jauh lebih kecil dari kolom (lebih kecil dari 40% lebar kolom), maka beri right indent sebesar 43% [angka ini nebak aja]
-Apabila lebar string terpanjang lebih panjang atau sama dengan panjang dari kolom, maka beri right indent sebesar (lebar kolom - lebar string terpanjang) dibagi 2
+beri right indent sebesar (lebar kolom - lebar string terpanjang) dibagi 2
 
 Next Development: Dropdown font family, style, size. Sisanya belum kepikiran perlu apalagi.
 
@@ -342,15 +341,6 @@ function main() {
     showScriptCompletionDialog(processedTables, totalTables, modifiedCellCount, tablesWithString, tablesWithoutString, userInputString);
 }
 
-// Function to get the index of the default font
-function getDefaultFontIndex(dropdown, fontName) {
-    for (var i = 0; i < dropdown.items.length; i++) {
-        if (dropdown.items[i].text.toLowerCase() === fontName.toLowerCase()) {
-            return i; // Return index if found
-        }
-    }
-    return 0; // Default to the first font if not found
-}
 
 // Function to get all tables in the document
 function getAllTables(doc) {
@@ -430,7 +420,7 @@ function getLongestStringWidth(table, colIndex, startRow) {
       maxWidth = tempTextFrame.geometricBounds[3] - tempTextFrame.geometricBounds[1];
 
       // Clean up temporary text frame
-      tempTextFrame.remove();
+    //   tempTextFrame.remove();
   }
   longstring = longestString;
   return maxWidth;
@@ -461,18 +451,19 @@ function applyStylesToAllRows(table, startRow) {
 
             // Calculate right indentation
             var rightIndent;
-            if (longestStringWidth < columnWidth * 0.40) { // If longest string is less than 50% of column width
-                rightIndent = columnWidth * 0.43; // Use default
-                adjustmethod = 1;
-            } else {
-                rightIndent = ((columnWidth - longestStringWidth)/2)-0.5; 
-                adjustmethod = 2;
-            }
+            rightIndent = ((columnWidth - longestStringWidth)/2)-0.5; 
 
+            try{
+                cell.paragraphs.everyItem().appliedParagraphStyle = app.activeDocument.paragraphStyles.item("isi tabel");
+
+
+            } catch(err) {
+                alert("Paragraph Style isi tabel tidak ada di dokumen ini.\nHati-hati pada Last Line Right Indent yang bukan 0.");
+            }
             try {
                 // Apply right indentation
                 cell.paragraphs.everyItem().rightIndent = rightIndent;
-
+                
             } catch(err) {
                 if(!isError){
                     var foundTextFrame = locateTextFrameWithStyle(app.activeDocument, "Judul Tabel Lamp INA");
@@ -485,6 +476,7 @@ function applyStylesToAllRows(table, startRow) {
                         adjustmethod: adjustmethod
                     };
                     isError = true;
+                    continueProcessing = false;
                     showErrorDialog(errorDetails);
                 }
             
