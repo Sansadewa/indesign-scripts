@@ -420,7 +420,7 @@ function getLongestStringWidth(table, colIndex, startRow) {
       maxWidth = tempTextFrame.geometricBounds[3] - tempTextFrame.geometricBounds[1];
 
       // Clean up temporary text frame
-    //   tempTextFrame.remove();
+       tempTextFrame.remove();
   }
   longstring = longestString;
   return maxWidth;
