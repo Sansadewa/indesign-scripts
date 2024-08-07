@@ -420,7 +420,7 @@ function getLongestStringWidth(table, colIndex, startRow) {
       maxWidth = tempTextFrame.geometricBounds[3] - tempTextFrame.geometricBounds[1];
 
       // Clean up temporary text frame
-       tempTextFrame.remove();
+      tempTextFrame.remove();
   }
   longstring = longestString;
   return maxWidth;
@@ -455,11 +455,27 @@ function applyStylesToAllRows(table, startRow) {
 
             try{
                 cell.paragraphs.everyItem().appliedParagraphStyle = app.activeDocument.paragraphStyles.item("isi tabel");
-
-
             } catch(err) {
-                alert("Paragraph Style isi tabel tidak ada di dokumen ini.\nHati-hati pada Last Line Right Indent yang bukan 0.");
+                alert("Paragraph Style 'isi tabel' tidak ada di dokumen ini.\nHati-hati pada Last Line Right Indent yang bukan 0.");
             }
+
+            try{
+                if (rowIndex === table.rows.length - 1) {
+                    cell.paragraphs.everyItem().appliedParagraphStyle = app.activeDocument.paragraphStyles.item("Konten Total");
+                    cell.paragraphs.everyItem().justification = Justification.RIGHT_ALIGN;
+
+                    // Set vertical alignment to center
+                    cell.verticalJustification = VerticalJustification.CENTER_ALIGN;
+                }
+            } catch (err) {
+                alert("Paragraph Style 'Konten Total' (untuk baris akhir) tidak ada di dokumen ini.\nHati-hati pada Last Line Right Indent yang bukan 0 dan total yang tidak di bold.");
+                    cell.paragraphs.everyItem().appliedParagraphStyle = app.activeDocument.paragraphStyles.item("Konten Total+");
+                    cell.paragraphs.everyItem().justification = Justification.RIGHT_ALIGN;
+
+                    // Set vertical alignment to center
+                    cell.verticalJustification = VerticalJustification.CENTER_ALIGN;
+            }
+
             try {
                 // Apply right indentation
                 cell.paragraphs.everyItem().rightIndent = rightIndent;
